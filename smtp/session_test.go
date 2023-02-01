@@ -2,13 +2,12 @@ package smtp
 
 import (
 	"errors"
+	storage "github.com/jphautin/mailhog-storage"
+	"github.com/mailhog/data"
 	"sync"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
-
-	"github.com/mailhog/data"
-	"github.com/mailhog/storage"
 )
 
 type fakeRw struct {

@@ -8,3 +8,6 @@ MailHog-Server is the MailHog SMTP and HTTP API server.
 Copyright ©‎ 2014 - 2016, Ian Kent (http://iankent.uk)
 
 Released under MIT license, see [LICENSE](LICENSE.md) for details.
+
+
+

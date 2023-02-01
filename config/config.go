@@ -3,13 +3,12 @@ package config
 import (
 	"encoding/json"
 	"flag"
+	"github.com/ian-kent/envconf"
+	"github.com/jphautin/mailhog-server/monkey"
+	"github.com/jphautin/mailhog-storage"
+	"github.com/mailhog/data"
 	"io/ioutil"
 	"log"
-
-	"github.com/ian-kent/envconf"
-	"github.com/mailhog/MailHog-Server/monkey"
-	"github.com/mailhog/data"
-	"github.com/mailhog/storage"
 )
 
 // DefaultConfig is the default config

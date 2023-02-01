@@ -11,11 +11,10 @@ import (
 
 	"github.com/gorilla/pat"
 	"github.com/ian-kent/go-log/log"
-	"github.com/mailhog/MailHog-Server/config"
-	"github.com/mailhog/data"
-	"github.com/mailhog/storage"
-
 	"github.com/ian-kent/goose"
+	"github.com/jphautin/mailhog-server/config"
+	"github.com/jphautin/mailhog-storage"
+	"github.com/mailhog/data"
 )
 
 // APIv1 implements version 1 of the MailHog API
@@ -119,20 +118,41 @@ func (apiv1 *APIv1) eventstream(w http.ResponseWriter, req *http.Request) {
 	stream.AddReceiver(w)
 }
 
+func (apiv1 *APIv1) getOptionalSorting(w http.ResponseWriter, req *http.Request) (field, order string) {
+
+	field = "time"
+	order = "desc"
+
+	f := req.URL.Query().Get("field")
+	if len(f) == 0 {
+		field = "time"
+	} else {
+		field = f
+	}
+	o := req.URL.Query().Get("order")
+	if len(o) == 0 {
+		order = "desc"
+	} else {
+		order = o
+	}
+
+	return
+}
+
 func (apiv1 *APIv1) messages(w http.ResponseWriter, req *http.Request) {
 	log.Println("[APIv1] GET /api/v1/messages")
 
 	apiv1.defaultOptions(w, req)
-
+	field, order := apiv1.getOptionalSorting(w, req)
 	// TODO start, limit
 	switch apiv1.config.Storage.(type) {
 	case *storage.MongoDB:
-		messages, _ := apiv1.config.Storage.(*storage.MongoDB).List(0, 1000)
+		messages, _ := apiv1.config.Storage.(*storage.MongoDB).List(0, 1000, field, order)
 		bytes, _ := json.Marshal(messages)
 		w.Header().Add("Content-Type", "text/json")
 		w.Write(bytes)
 	case *storage.InMemory:
-		messages, _ := apiv1.config.Storage.(*storage.InMemory).List(0, 1000)
+		messages, _ := apiv1.config.Storage.(*storage.InMemory).List(0, 1000, field, order)
 		bytes, _ := json.Marshal(messages)
 		w.Header().Add("Content-Type", "text/json")
 		w.Write(bytes)

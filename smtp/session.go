@@ -8,10 +8,10 @@ import (
 	"strings"
 
 	"github.com/ian-kent/linkio"
-	"github.com/mailhog/MailHog-Server/monkey"
+	"github.com/jphautin/mailhog-server/monkey"
+	"github.com/jphautin/mailhog-storage"
 	"github.com/mailhog/data"
 	"github.com/mailhog/smtp"
-	"github.com/mailhog/storage"
 )
 
 // Session represents a SMTP session using net.TCPConn

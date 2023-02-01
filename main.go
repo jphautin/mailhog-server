@@ -2,17 +2,14 @@ package main
 
 import (
 	"flag"
-	"os"
-
-	gohttp "net/http"
-
 	"github.com/ian-kent/go-log/log"
-	"github.com/mailhog/MailHog-Server/api"
-	"github.com/mailhog/MailHog-Server/config"
-	"github.com/mailhog/MailHog-Server/smtp"
-	"github.com/mailhog/MailHog-UI/assets"
-	comcfg "github.com/mailhog/MailHog/config"
-	"github.com/mailhog/http"
+	comcfg "github.com/jphautin/MailHog/config"
+	"github.com/jphautin/mailhog-gui/web"
+	"github.com/jphautin/mailhog-server/api"
+	"github.com/jphautin/mailhog-server/config"
+	"github.com/jphautin/mailhog-server/smtp"
+	gohttp "net/http"
+	"os"
 )
 
 var conf *config.Config
@@ -31,14 +28,14 @@ func main() {
 	configure()
 
 	if comconf.AuthFile != "" {
-		http.AuthFile(comconf.AuthFile)
+		web.AuthFile(comconf.AuthFile)
 	}
 
 	exitCh = make(chan int)
 	cb := func(r gohttp.Handler) {
 		api.CreateAPI(conf, r)
 	}
-	go http.Listen(conf.APIBindAddr, assets.Asset, exitCh, cb)
+	go web.Listen(conf.APIBindAddr, cb)
 	go smtp.Listen(conf, exitCh)
 
 	for {

@@ -2,15 +2,14 @@ package api
 
 import (
 	"encoding/json"
-	"net/http"
-	"strconv"
-
 	"github.com/gorilla/pat"
 	"github.com/ian-kent/go-log/log"
-	"github.com/mailhog/MailHog-Server/config"
-	"github.com/mailhog/MailHog-Server/monkey"
-	"github.com/mailhog/MailHog-Server/websockets"
+	"github.com/jphautin/mailhog-server/config"
+	"github.com/jphautin/mailhog-server/monkey"
+	"github.com/jphautin/mailhog-server/websockets"
 	"github.com/mailhog/data"
+	"net/http"
+	"strconv"
 )
 
 // APIv2 implements version 2 of the MailHog API
@@ -96,16 +95,38 @@ func (apiv2 *APIv2) getStartLimit(w http.ResponseWriter, req *http.Request) (sta
 	return
 }
 
+func (apiv2 *APIv2) getOptionalSorting(w http.ResponseWriter, req *http.Request) (field, order string) {
+
+	field = "time"
+	order = "desc"
+
+	f := req.URL.Query().Get("field")
+	if len(f) == 0 {
+		field = "time"
+	} else {
+		field = f
+	}
+	o := req.URL.Query().Get("order")
+	if len(o) == 0 {
+		order = "desc"
+	} else {
+		order = o
+	}
+
+	return
+}
+
 func (apiv2 *APIv2) messages(w http.ResponseWriter, req *http.Request) {
 	log.Println("[APIv2] GET /api/v2/messages")
 
 	apiv2.defaultOptions(w, req)
 
 	start, limit := apiv2.getStartLimit(w, req)
+	field, order := apiv2.getOptionalSorting(w, req)
 
 	var res messagesResult
 
-	messages, err := apiv2.config.Storage.List(start, limit)
+	messages, err := apiv2.config.Storage.List(start, limit, field, order)
 	if err != nil {
 		panic(err)
 	}
@@ -126,6 +147,7 @@ func (apiv2 *APIv2) search(w http.ResponseWriter, req *http.Request) {
 	apiv2.defaultOptions(w, req)
 
 	start, limit := apiv2.getStartLimit(w, req)
+	field, order := apiv2.getOptionalSorting(w, req)
 
 	kind := req.URL.Query().Get("kind")
 	if kind != "from" && kind != "to" && kind != "containing" {
@@ -141,7 +163,7 @@ func (apiv2 *APIv2) search(w http.ResponseWriter, req *http.Request) {
 
 	var res messagesResult
 
-	messages, total, _ := apiv2.config.Storage.Search(kind, query, start, limit)
+	messages, total, _ := apiv2.config.Storage.Search(kind, query, start, limit, field, order)
 
 	res.Count = len([]data.Message(*messages))
 	res.Start = start
