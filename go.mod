@@ -9,9 +9,9 @@ require (
 	github.com/ian-kent/go-log v0.0.0-20160113211217-5731446c36ab
 	github.com/ian-kent/goose v0.0.0-20141221090059-c3541ea826ad
 	github.com/ian-kent/linkio v0.0.0-20170807205755-97566b872887
-	github.com/jphautin/MailHog v1.1.0-rc2
-	github.com/jphautin/mailhog-gui v1.1.0-rc2
-	github.com/jphautin/mailhog-storage v1.1.0-rc2
+	github.com/jphautin/MailHog v1.1.0-rc3
+	github.com/jphautin/mailhog-gui v1.1.0-rc3
+	github.com/jphautin/mailhog-storage v1.1.0-rc3
 	github.com/mailhog/data v1.0.1
 	github.com/mailhog/smtp v1.0.1
 	github.com/smartystreets/goconvey v1.7.2
