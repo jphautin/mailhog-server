@@ -5,7 +5,7 @@ import (
 	"flag"
 	"github.com/ian-kent/envconf"
 	"github.com/jphautin/mailhog-server/monkey"
-	"github.com/jphautin/mailhog-storage"
+	storage "github.com/jphautin/mailhog-storage"
 	"github.com/mailhog/data"
 	"io/ioutil"
 	"log"
